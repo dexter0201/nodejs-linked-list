@@ -25,6 +25,8 @@ ListItem.prototype.empty = function () {
 ListItem.prototype.apply = function (func) {
     if (typeof this.content !== 'undefined' && typeof func === 'function') {
         return func(this.content, this);
+    } else {
+        return false;
     }
 };
 
@@ -66,7 +68,7 @@ List.prototype.add = function (content, afterItem) {
         this.head.content = content;
         this.length = 1;
 
-        return null;
+        return this.head;
     }
 
     var newItem = new ListItem(content),
