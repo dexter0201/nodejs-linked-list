@@ -5,6 +5,11 @@ function ListItem(content) {
     this.content = content;
 }
 
+ListItem.prototype.destroy = function () {
+    this.content = null;
+    this.link = null;
+};
+
 ListItem.prototype.linkTo = function (item) {
     if (item && item.link) {
         this.link = item.link;
@@ -23,19 +28,22 @@ ListItem.prototype.apply = function (func) {
     }
 };
 
-ListItem.prototype.destroy = function () {
-    this.content = null;
-    this.link = null;
-};
-
 function List(sortFunc) {
     this.head = new ListItem();
     this.sorter = sortFunc || function () {
         return false;
     };
+    this.length = 0;
 }
 
 List.prototype.destroy = function () {
+    this.purge();
+    this.length = 0;
+    this.sorter = null;
+    this.head = null;
+};
+
+List.prototype.purge = function () {
     var item = this.head,
         temp;
 
@@ -44,6 +52,9 @@ List.prototype.destroy = function () {
         item = item.link;
         temp.destroy();
     }
+
+    this.head.content = undefined;
+    this.length = 0;
 };
 
 List.prototype.empty = function () {
@@ -53,6 +64,7 @@ List.prototype.empty = function () {
 List.prototype.add = function (content, afterItem) {
     if (this.head.empty()) {
         this.head.content = content;
+        this.length = 1;
 
         return null;
     }
@@ -66,6 +78,8 @@ List.prototype.add = function (content, afterItem) {
     } else {
         newItem.linkTo(item);
     }
+
+    this.length++;
 
     return newItem;
 };
@@ -87,11 +101,17 @@ List.prototype.removeOne = function (listItem) {
                 prevItem.link = item.link;
                 item.destroy();
             }
+
+            this.length--;
+
+            return true;
         }
 
         prevItem = item;
         item = item.link;
     }
+
+    return false;
 };
 
 List.prototype.findOne = function (func) {
@@ -122,6 +142,19 @@ List.prototype.forEachWithCondition = function (func) {
 
         item = item.link;
     }
+};
+
+List.prototype.drain = function () {
+    var result = [],
+        countObj = {
+            count: 0
+        };
+
+    result.length = this.length;
+    this.forEach(drainer.bind(null, result, countObj));
+    this.purge();
+
+    return result;
 };
 
 List.prototype.logs = function () {
@@ -171,3 +204,10 @@ List.prototype.firstItemToSatisty = function (func) {
 
     return item;
 };
+
+function drainer(array, countObj, content) {
+    array[countObj.count] = content;
+    countObj.count++;
+}
+
+module.exports = List;
