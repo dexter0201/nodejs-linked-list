@@ -1,0 +1,20 @@
+{
+    "name": "nodejs-linked-list",
+    "description": "NodeJs linked list",
+    "authors": "Dexter Nguyen",
+    "version": "0.1.0",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:dexter0201/nodejs-linked-list.git"
+    },
+    "keywords": [
+        "list",
+        "container",
+        "ioc",
+        "ioc container",
+        "ioc-container",
+        "lazy loading",
+        "lazy dependencies"
+    ]
+}
