@@ -81,7 +81,7 @@ List.prototype.add = function (content, afterItem) {
         newItem.linkTo(item);
     }
 
-    this.length++;
+    this.length += 1;
 
     return newItem;
 };
@@ -104,7 +104,7 @@ List.prototype.removeOne = function (listItem) {
                 item.destroy();
             }
 
-            this.length--;
+            this.length -= 1;
 
             return true;
         }
@@ -145,6 +145,11 @@ List.prototype.forEachWithCondition = function (func) {
         item = item.link;
     }
 };
+
+function drainer(array, countObj, content) {
+    array[countObj.count] = content;
+    countObj.count += 1;
+}
 
 List.prototype.drain = function () {
     var result = [],
@@ -206,10 +211,5 @@ List.prototype.firstItemToSatisty = function (func) {
 
     return item;
 };
-
-function drainer(array, countObj, content) {
-    array[countObj.count] = content;
-    countObj.count++;
-}
 
 module.exports = List;
